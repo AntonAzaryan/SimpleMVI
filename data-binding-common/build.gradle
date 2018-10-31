@@ -1,0 +1,41 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+
+dependencies {
+    api project(':simple-mvi')
+    implementation Deps.kotlinStdlib
+    implementation Deps.appCompat
+
+    testImplementation Deps.jUnit
+    androidTestImplementation Deps.espressoCore
+    androidTestImplementation Deps.androidTestRunner
+}
+
+android {
+    compileSdkVersion Version.compileSdkVersion
+
+    defaultConfig {
+        compileSdkVersion Version.compileSdkVersion
+        buildToolsVersion Version.buildToolsVersion
+
+        versionCode 10000
+        versionName "1.0.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    dataBinding.enabled = true
+
+    compileOptions {
+        sourceCompatibility General.sourceCompatibility
+        targetCompatibility General.targetCompatibility
+    }
+}
