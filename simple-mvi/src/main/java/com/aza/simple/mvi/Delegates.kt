@@ -6,7 +6,7 @@ import androidx.lifecycle.Observer
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
-open class LifecycleDelegate<VS>(
+open class UnidirectionalFlowBinder<VS>(
   protected val callback: Callback<VS>
 ) : DefaultLifecycleObserver {
 
@@ -30,6 +30,7 @@ open class LifecycleDelegate<VS>(
   }
 
   interface Callback<VS> {
+    var createdFirstTime: Boolean
     fun onCreatePresenter(): Presenter<VS>
     fun onCreateEventStream(): Observable<Any>
     fun onRenderState(state: VS)

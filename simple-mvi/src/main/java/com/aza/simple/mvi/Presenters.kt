@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.functions.Consumer
@@ -29,18 +30,19 @@ abstract class BasePresenter<VS>(
 
   protected val eventRelay: Relay<Any> = PublishRelay.create<Any>().toSerialized()
   protected val stateLiveData: MutableLiveData<VS> = MutableLiveData<VS>().apply { value = initState() }
-  protected val intentStream: Observable<Any> = eventsHandler(eventRelay).share()
+  protected val eventProcessingStream: Observable<Any> = eventsHandler(eventRelay).share()
 
   override val eventsConsumer: Consumer<Any> = eventRelay
   override val stateProducer: LiveData<VS> = stateLiveData
 
   init {
     disposables.addAll(
-      intentStream.subscribe(eventRelay), // for side effects
-      intentStream
+      eventProcessingStream.subscribe(eventRelay), // for side effects
+      eventProcessingStream
         .scan(stateLiveData.value, BiFunction(stateReducer))
         .distinctUntilChanged()
-        .subscribe { stateLiveData.postValue(it) }
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe { stateLiveData.value = it }
     )
   }
 

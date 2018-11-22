@@ -4,9 +4,10 @@ apply plugin: 'kotlin-kapt'
 
 
 dependencies {
-    api project(':simple-mvi')
+    implementation project(':simple-mvi')
     implementation Deps.kotlinStdlib
     implementation Deps.appCompat
+    implementation Deps.androidLifecycleCommon
 
     testImplementation Deps.jUnit
     androidTestImplementation Deps.espressoCore
